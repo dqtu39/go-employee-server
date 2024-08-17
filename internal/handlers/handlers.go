@@ -31,7 +31,6 @@ func (handler *EmployeeHandler) GetEmployeeById(w http.ResponseWriter, r *http.R
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(employee)
-
 }
 
 func (handler *EmployeeHandler) CreateEmployee(w http.ResponseWriter, r *http.Request) {
@@ -74,7 +73,20 @@ func (handler *EmployeeHandler) DeleteEmployee(w http.ResponseWriter, r *http.Re
 }
 
 func (handler *EmployeeHandler) GetAllEmployees(w http.ResponseWriter, r *http.Request) {
-	employees, err := handler.service.GetAllEmployees()
+	offsetStr := r.URL.Query().Get("offset")
+	limitStr := r.URL.Query().Get("limit")
+
+	offset, err := strconv.Atoi(offsetStr)
+	if err != nil {
+		offset = 0
+	}
+
+	limit, err := strconv.Atoi(limitStr)
+	if err != nil {
+		limit = 10
+	}
+
+	employees, err := handler.service.GetAllEmployees(offset, limit)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
