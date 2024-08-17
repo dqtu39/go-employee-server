@@ -6,7 +6,7 @@ import (
 )
 
 type EmployeeRepository interface {
-	GetAll() ([]models.Employee, error)
+	GetAll(offset int, limit int) ([]models.Employee, error)
 	GetByID(id int) (*models.Employee, error)
 	Add(employee models.Employee) (int64, error)
 	Update(id int, employee models.Employee) (int64, error)
@@ -21,8 +21,8 @@ func NewEmployeeRepository(db *sql.DB) EmployeeRepository {
 	return &employeeRepository{db: db}
 }
 
-func (r *employeeRepository) GetAll() ([]models.Employee, error) {
-	rows, err := r.db.Query("SELECT * FROM employee")
+func (r *employeeRepository) GetAll(offset int, limit int) ([]models.Employee, error) {
+	rows, err := r.db.Query("SELECT * FROM employee LIMIT ? OFFSET ?", limit, offset)
 	if err != nil {
 		return nil, err
 	}

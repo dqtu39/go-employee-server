@@ -6,7 +6,7 @@ import (
 )
 
 type EmployeeService interface {
-	GetAllEmployees() ([]models.Employee, error)
+	GetAllEmployees(offset int, limit int) ([]models.Employee, error)
 	GetEmployeeByID(id int) (*models.Employee, error)
 	AddEmployee(employee models.Employee) (int64, error)
 	UpdateEmployee(id int, employee models.Employee) (int64, error)
@@ -21,8 +21,8 @@ func NewEmployeeService(repo repository.EmployeeRepository) EmployeeService {
 	return &employeeService{repo: repo}
 }
 
-func (s *employeeService) GetAllEmployees() ([]models.Employee, error) {
-	return s.repo.GetAll()
+func (s *employeeService) GetAllEmployees(offset int, limit int) ([]models.Employee, error) {
+	return s.repo.GetAll(offset, limit)
 }
 
 func (s *employeeService) GetEmployeeByID(id int) (*models.Employee, error) {
